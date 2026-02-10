@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Account | Perfume Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <h2 class="logo">Perfume<span>Hub</span></h2>
+</nav>
+
+<section class="auth-container fade-in">
+
+  <div class="auth-box slide-up">
+    <h2>Create Your Account</h2>
+    <p class="sub-text">Join Perfume Hub and discover premium fragrances.</p>
+
+    <form id="registerForm">
+      <input type="text" placeholder="Full Name" required>
+      <input type="email" placeholder="Email Address" required>
+      <input type="password" placeholder="Password" required>
+
+      <button>Create Account</button>
+    </form>
+
+    <p class="switch-link">
+      Already have an account?
+      <a href="login.html">Login</a>
+    </p>
+  </div>
+
+</section>
+
+<script>
+
+const form = document.getElementById("registerForm");
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+
+  const user = {
+    name: form[0].value,
+    email: form[1].value,
+    password: form[2].value
+  };
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+  users.push(user);
+
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("Account created successfully");
+  window.location.href = "login.html";
+});
+
+</script>
+
+</body>
+</html>

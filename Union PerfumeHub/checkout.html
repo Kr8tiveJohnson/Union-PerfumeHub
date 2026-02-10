@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Checkout | Perfume Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="checkout-body">
+
+<div class="checkout-wrapper">
+
+  <div class="checkout-card">
+    <h2>Checkout</h2>
+    <p class="checkout-sub">Complete your order</p>
+
+    <form id="checkoutForm">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="tel" id="phone" placeholder="Phone Number" required>
+      <input type="text" id="address" placeholder="Delivery Address" required>
+
+      <button type="submit">Place Order</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+document.getElementById("checkoutForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+  cart.forEach(item => {
+    orders.push({
+      id: Date.now() + Math.random(),
+      customerName: name.value,
+      phone: phone.value,
+      address: address.value,
+      product: item,
+      vendor: item.vendor,
+      status: "Pending"
+    });
+  });
+
+  localStorage.setItem("orders", JSON.stringify(orders));
+  localStorage.removeItem("cart");
+
+  alert("Order placed successfully!");
+  window.location.href = "index.html";
+});
+</script>
+
+</body>
+</html>

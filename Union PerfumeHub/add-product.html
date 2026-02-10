@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Add Product | Vendor Panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<section class="add-product-page fade-in">
+
+<div class="add-product-container">
+
+<!-- HEADER -->
+<div class="add-header">
+<h1>Add New Product</h1>
+<p>Upload and manage your perfume listings</p>
+</div>
+
+<!-- FORM -->
+<form id="addProductForm">
+
+<div class="form-group">
+<label>Product Image</label>
+<input type="file" id="productImage" accept="image/*" required>
+</div>
+
+<div class="form-group">
+<label>Product Name</label>
+<input type="text" id="productName" placeholder="e.g. Oud Luxury" required>
+</div>
+
+<div class="form-group">
+<label>Price (₦)</label>
+<input type="number" id="productPrice" placeholder="e.g. 15000" required>
+</div>
+
+<div class="form-group">
+<label>Category</label>
+<select id="productCategory">
+<option>Men</option>
+<option>Women</option>
+<option>Unisex</option>
+<option>Luxury</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Description</label>
+<textarea id="productDescription" placeholder="Short product description" required></textarea>
+</div>
+
+<button type="submit" class="submit-btn">Add Product</button>
+
+</form>
+
+<!-- BACK -->
+<a href="vendor.dashboard.html" class="back-link">← Back to Dashboard</a>
+
+</div>
+
+</section>
+
+<script>
+// AUTH CHECK
+let vendor = JSON.parse(localStorage.getItem("loggedVendor"));
+
+if(!vendor){
+location.href="vendor-login.html";
+}
+
+// FORM SUBMIT
+document.getElementById("addProductForm").addEventListener("submit", function(e){
+e.preventDefault();
+
+let reader = new FileReader();
+let imageFile = document.getElementById("productImage").files[0];
+
+reader.onload = function(){
+
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+let newProduct = {
+id: Date.now(),
+name: productName.value,
+price: productPrice.value,
+category: productCategory.value,
+description: productDescription.value,
+image: reader.result,
+vendorName: vendor.business
+};
+
+products.push(newProduct);
+localStorage.setItem("products", JSON.stringify(products));
+
+alert("Product added successfully!");
+location.href="vendor.dashboard.html";
+
+};
+
+reader.readAsDataURL(imageFile);
+
+});
+</script>
+
+</body>
+</html>

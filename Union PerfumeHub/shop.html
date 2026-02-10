@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shop | Union PerfumeHub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <h2 class="logo">Perfume Hub</h2>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="cart.html">Cart 🛒</a>
+  </div>
+</nav>
+
+<!-- SHOP SECTION -->
+<section class="shop-section fade-in">
+  <h1 class="shop-title">Explore Premium Perfumes</h1>
+
+  <div class="product-grid" id="productGrid">
+    <!-- Products load here -->
+  </div>
+</section>
+
+<script>
+// LOAD PRODUCTS
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let grid = document.getElementById("productGrid");
+
+if(products.length === 0){
+  grid.innerHTML = "<p class='empty-text'>No perfumes available yet.</p>";
+}
+
+products.forEach(product => {
+  grid.innerHTML += `
+    <div class="product-card">
+      <img src="${product.image}" alt="${product.name}">
+      <div class="product-info">
+        <h3>${product.name}</h3>
+        <p class="vendor">By ${product.vendorName}</p>
+        <p class="price">₦${product.price}</p>
+        <button onclick="addToCart(${product.id})">Add to Cart</button>
+      </div>
+    </div>
+  `;
+});
+
+// CART FUNCTION
+function addToCart(id){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let item = products.find(p => p.id === id);
+
+  cart.push(item);
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert("Added to cart 🛒");
+}
+</script>
+
+</body>
+</html>

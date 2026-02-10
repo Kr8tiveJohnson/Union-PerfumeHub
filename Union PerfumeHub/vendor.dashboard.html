@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vendor Dashboard | Perfume Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <h2 class="sidebar-logo">Perfume Hub</h2>
+
+  <nav>
+    <a class="active">Dashboard</a>
+    <a href="add-product.html">Add Product</a>
+    <a onclick="logoutVendor()">Logout</a>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="dashboard-main fade-in">
+
+<!-- HEADER -->
+<header class="dashboard-header">
+  <h1 id="businessName">Vendor</h1>
+  <p>Manage your perfume listings</p>
+</header>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stat-card">
+    <h3 id="productCount">0</h3>
+    <span>Products</span>
+  </div>
+  <div class="stat-card">
+    <h3>₦0</h3>
+    <span>Total Sales</span>
+  </div>
+</section>
+
+<section class="vendor-profile">
+  <h3>Business Profile</h3>
+
+  <form id="vendorProfileForm">
+    <input type="text" id="businessName" placeholder="Business Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="tel" id="phone" placeholder="Phone Number" required>
+    <textarea id="description" placeholder="Business Description"></textarea>
+
+    <button type="submit">Update Profile</button>
+  </form>
+</section>
+
+
+<!-- PRODUCTS -->
+<section class="vendor-products">
+  <h2>Your Products</h2>
+
+  <div class="vendor-product-list" id="vendorProducts">
+    <!-- Vendor products load here -->
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// AUTH CHECK
+let vendor = JSON.parse(localStorage.getItem("loggedVendor"));
+if(!vendor){
+  location.href="vendor-login.html";
+}
+
+// SET BUSINESS NAME
+document.getElementById("businessName").textContent = vendor.business;
+
+// LOAD PRODUCTS
+let products = JSON.parse(localStorage.getItem("products")) || [];
+let vendorProducts = products.filter(p => p.vendorName === vendor.business);
+
+document.getElementById("productCount").textContent = vendorProducts.length;
+
+let list = document.getElementById("vendorProducts");
+
+if(vendorProducts.length === 0){
+  list.innerHTML = "<p class='empty-text'>No products added yet.</p>";
+
+  window.addEventListener("pageshow", function(){
+  let vendor = JSON.parse(localStorage.getItem("loggedVendor"));
+  if(!vendor){
+    location.href = "vendor-login.html";
+  }
+});
+
+let vendors = JSON.parse(localStorage.getItem("vendors")) || [];
+let loggedVendor = JSON.parse(localStorage.getItem("loggedVendor"));
+
+const businessName = document.getElementById("businessName");
+const email = document.getElementById("email");
+const phone = document.getElementById("phone");
+const description = document.getElementById("description");
+
+/* Auto-fill */
+businessName.value = loggedVendor.businessName;
+email.value = loggedVendor.email;
+phone.value = loggedVendor.phone || "";
+description.value = loggedVendor.description || "";
+
+/* Update Profile */
+document.getElementById("vendorProfileForm").addEventListener("submit", e => {
+  e.preventDefault();
+
+  const index = vendors.findIndex(v => v.id === loggedVendor.id);
+
+  vendors[index] = {
+    ...vendors[index],
+    businessName: businessName.value,
+    email: email.value,
+    phone: phone.value,
+    description: description.value
+  };
+
+  localStorage.setItem("vendors", JSON.stringify(vendors));
+  localStorage.setItem("loggedVendor", JSON.stringify(vendors[index]));
+
+  alert("Profile updated successfully!");
+});
+
+
+}
+
+vendorProducts.forEach(p => {
+  list.innerHTML += `
+    <div class="vendor-product-card">
+      <img src="${p.image}">
+      <div class="vendor-product-info">
+        <h4>${p.name}</h4>
+        <span>₦${p.price}</span>
+        <button class="delete-btn" onclick="deleteProduct(${p.id})">Delete</button>
+      </div>
+    </div>
+  `;
+});
+
+function deleteProduct(id){
+  if(!confirm("Delete this product?")) return;
+
+  let products = JSON.parse(localStorage.getItem("products")) || [];
+
+  products = products.filter(p => p.id !== id);
+
+  localStorage.setItem("products", JSON.stringify(products));
+
+  location.reload();
+}
+
+
+// LOGOUT
+function logoutVendor(){
+  localStorage.removeItem("loggedVendor");
+  location.href="index.html";
+}
+</script>
+
+</body>
+</html>

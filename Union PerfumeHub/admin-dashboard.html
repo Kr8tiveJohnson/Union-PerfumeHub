@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Perfume Hub</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="navbar">
+  <h2 class="logo">Perfume<span>Hub</span> Admin</h2>
+</nav>
+
+<section class="dashboard">
+
+<!-- Sidebar -->
+<div class="dashboard-sidebar">
+  <h3>Admin Panel</h3>
+  <ul>
+    <li onclick="showSection('overview')">Dashboard</li>
+    <li onclick="showSection('vendors')">Vendors</li>
+    <li onclick="showSection('products')">Products</li>
+    <li onclick="showSection('orders')">Orders</li>
+    <li onclick="adminLogout()">Logout</li>
+  </ul>
+</div>
+
+<!-- Main Content -->
+<div class="dashboard-content">
+
+  <!-- Overview -->
+  <div id="overview">
+    <h2>Platform Overview</h2>
+
+    <div class="stats">
+      <div class="stat-box">
+        <h3>Total Vendors</h3>
+        <p id="vendorCount">0</p>
+      </div>
+
+      <div class="stat-box">
+        <h3>Total Products</h3>
+        <p id="productCount">0</p>
+      </div>
+
+      <div class="stat-box">
+        <h3>Total Orders</h3>
+        <p id="orderCount">0</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendors -->
+  <div id="vendors" style="display:none">
+    <h2>Registered Vendors</h2>
+    <div id="vendorList"></div>
+  </div>
+
+  <!-- Products -->
+  <div id="products" style="display:none">
+    <h2>Marketplace Products</h2>
+    <div id="productList"></div>
+  </div>
+
+  <!-- Orders -->
+  <div id="orders" style="display:none">
+    <h3>All Orders</h3>
+    <div id="allOrders"></div>
+    
+  </div>
+
+</div>
+
+</section>
+
+<script src="js/main.js"></script>
+
+<script>
+
+// Admin Protection
+if(!localStorage.getItem("adminLoggedIn")) {
+  window.location.href = "admin-login.html";
+}
+
+// Section Toggle
+function showSection(section) {
+
+  document.getElementById("overview").style.display = "none";
+  document.getElementById("vendors").style.display = "none";
+  document.getElementById("products").style.display = "none";
+  document.getElementById("orders").style.display = "none";
+
+  document.getElementById(section).style.display = "block";
+}
+
+// Logout
+function adminLogout() {
+  localStorage.removeItem("adminLoggedIn");
+  window.location.href = "admin-login.html";
+}
+
+// Load Data
+const vendors = getVendors();
+const products = getProducts();
+const orders = getOrders();
+
+// Stats
+document.getElementById("vendorCount").innerText = vendors.length;
+document.getElementById("productCount").innerText = products.length;
+document.getElementById("orderCount").innerText = orders.length;
+
+// Vendor List
+const vendorBox = document.getElementById("vendorList");
+
+vendors.forEach(v => {
+  vendorBox.innerHTML += `
+    <div class="product-card">
+      <h4>${v.business}</h4>
+      <p>Owner: ${v.owner}</p>
+      <p>Email: ${v.email}</p>
+    </div>
+  `;
+});
+
+// Product List
+const productBox = document.getElementById("productList");
+
+products.forEach(p => {
+  productBox.innerHTML += `
+    <div class="product-card">
+      <h4>${p.name}</h4>
+      <p>Vendor: ${p.vendorName}</p>
+      <p>₦${p.price}</p>
+    </div>
+  `;
+});
+
+// Orders List
+const orderBox = document.getElementById("orderList");
+
+orders.forEach(o => {
+  orderBox.innerHTML += `
+    <div class="product-card">
+      <h4>${o.product}</h4>
+      <p>Vendor: ${o.vendor}</p>
+      <p>Status: ${o.status}</p>
+    </div>
+  `;
+});
+const allOrders = JSON.parse(localStorage.getItem("orders")) || [];
+
+document.getElementById("allOrders").innerHTML = allOrders.map(o => `
+  <div class="order-card">
+    <p><strong>${o.product.name}</strong></p>
+    <p>Vendor: ${o.vendor}</p>
+    <p>Customer: ${o.customerName}</p>
+    <p>Status: ${o.status}</p>
+  </div>
+`).join("");
+
+</script>
+
+</body>
+</html>
